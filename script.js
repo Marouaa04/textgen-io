@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    const BACKEND_URL = 'http://127.0.0.1:5000';
+    const BACKEND_URL = 'https://web-production-2401b.up.railway.app';
 
     // Process text function
     async function processText(action) {
@@ -65,4 +65,5 @@ document.addEventListener('DOMContentLoaded', function() {
     rephraseBtn.addEventListener('click', () => processText('rephrase'));
     grammarBtn.addEventListener('click', () => processText('grammar'));
     scriptBtn.addEventListener('click', () => processText('script'));      // This is now ONLY for scripts
+
 });
