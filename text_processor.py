@@ -1,4 +1,5 @@
 import os
+import time
 import requests
 import logging
 from dotenv import load_dotenv
@@ -19,7 +20,6 @@ class TextProcessor:
         else:
             logger.info("✅ Hugging Face API key loaded successfully.")
 
-        # ✅ Using Llama model via new router endpoint
         self.model = "meta-llama/Llama-3.1-8B-Instruct"
 
         self.models = {
@@ -29,7 +29,6 @@ class TextProcessor:
             'script':   self.model,
         }
 
-        # ✅ NEW working URL — router.huggingface.co
         self.api_url = "https://router.huggingface.co/v1/chat/completions"
 
     def call_huggingface(self, prompt: str, model: str, max_length: int = 500) -> str:
@@ -48,30 +47,48 @@ class TextProcessor:
         logger.debug(f"   Model: {model}")
         logger.debug(f"   Prompt: {prompt[:120]}{'...' if len(prompt) > 120 else ''}")
 
-        try:
-            response = requests.post(self.api_url, headers=headers, json=payload, timeout=30)
-            logger.debug(f"📥 Status: {response.status_code}")
+        # Retry up to 3 times if rate limited
+        for attempt in range(3):
+            try:
+                response = requests.post(self.api_url, headers=headers, json=payload, timeout=30)
+                logger.debug(f"📥 Status: {response.status_code}")
 
-            if response.status_code == 503:
-                logger.warning("Model is loading — returning fallback.")
+                # Rate limited — wait and retry
+                if response.status_code == 429:
+                    wait = 10 * (attempt + 1)
+                    logger.warning(f"⏳ Rate limited — waiting {wait} seconds and retrying (attempt {attempt + 1}/3)...")
+                    time.sleep(wait)
+                    continue
+
+                # Model loading
+                if response.status_code == 503:
+                    logger.warning("Model is loading — waiting 5 seconds and retrying...")
+                    time.sleep(5)
+                    continue
+
+                response.raise_for_status()
+                data = response.json()
+                logger.debug(f"   Raw response: {str(data)[:200]}")
+
+                if "choices" in data and len(data["choices"]) > 0:
+                    return data["choices"][0]["message"]["content"].strip()
+
+                logger.error(f"Unexpected response format: {data}")
                 return None
 
-            response.raise_for_status()
-            data = response.json()
-            logger.debug(f"   Raw response: {str(data)[:200]}")
+            except requests.exceptions.Timeout:
+                logger.error("⏰ Request timed out after 30 seconds.")
+                return None
+            except requests.exceptions.RequestException as e:
+                logger.error(f"🔥 Request failed: {e}")
+                if attempt < 2:
+                    logger.info(f"Retrying in 5 seconds...")
+                    time.sleep(5)
+                    continue
+                return None
 
-            if "choices" in data and len(data["choices"]) > 0:
-                return data["choices"][0]["message"]["content"].strip()
-
-            logger.error(f"Unexpected response format: {data}")
-            return None
-
-        except requests.exceptions.Timeout:
-            logger.error("⏰ Request timed out after 30 seconds.")
-            return None
-        except requests.exceptions.RequestException as e:
-            logger.error(f"🔥 Request failed: {e}")
-            return None
+        logger.error("All 3 attempts failed.")
+        return None
 
     def _fallback(self, action: str, context: str) -> str:
         fallbacks = {
