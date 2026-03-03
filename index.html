@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TextGen.io - AI Text Generation Workspace</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="announcement-bar">
+        Domain for sale: TextGen.io is available for sale <a href="mailto:infotextgen@textgen.io" class="contact-link">Contact Us</a>
+    </div>
+
+    <header>
+        <div class="logo">TextGen.io</div>
+        <nav>
+            <a href="#" class="active">Home</a>
+            <a href="#">About</a>
+            <a href="#">Tools</a>
+        </nav>
+    </header>
+
+    <main>
+        <h1>AI Text Generation Workspace</h1>
+        <p class="subtitle">Transform your text with powerful AI tools</p>
+
+        <div class="workspace">
+            <div class="input-section">
+                <label>your text</label>
+                <textarea id="input-text" placeholder="Paste your text here..." maxlength="500"></textarea>
+                <div class="char-counter">
+                    <span id="char-count">0</span>/500 characters
+                </div>
+            </div>
+
+            <div class="output-section">
+                <label>Results</label>
+                <div id="output-text" class="output-box">
+                    Results will appear here..
+                </div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button id="generate-btn" class="primary-btn">Generate</button>
+            <button id="rephrase-btn" class="action-btn">Rephrase</button>
+            <button id="grammar-btn" class="action-btn">Grammar Fix</button>
+            <button id="script-btn" class="action-btn">Script Gen</button>
+        </div>
+    </main>
+
+    <footer>
+        <p>2026 TextGen.io. All rights reserved</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
