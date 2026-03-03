@@ -13,14 +13,15 @@ logger = logging.getLogger(__name__)
 class TextProcessor:
 
     def __init__(self):
-        self.api_key = os.getenv("HUGGINGFACE_API_KEY")
+        self.api_key = os.getenv("GROQ_API_KEY")
 
-        if not self.api_key or self.api_key == "your_huggingface_api_key_here":
-            logger.warning("⚠️  HUGGINGFACE_API_KEY not set — fallback responses will be used.")
+        if not self.api_key:
+            logger.warning("⚠️  GROQ_API_KEY not set — fallback responses will be used.")
         else:
-            logger.info("✅ Hugging Face API key loaded successfully.")
+            logger.info("✅ Groq API key loaded successfully.")
 
-        self.model = "meta-llama/Llama-3.1-8B-Instruct"
+        # Groq model — fast and free
+        self.model = "llama3-8b-8192"
 
         self.models = {
             'generate': self.model,
@@ -29,7 +30,8 @@ class TextProcessor:
             'script':   self.model,
         }
 
-        self.api_url = "https://router.huggingface.co/v1/chat/completions"
+        # Groq API endpoint
+        self.api_url = "https://api.groq.com/openai/v1/chat/completions"
 
     def call_huggingface(self, prompt: str, model: str, max_length: int = 500) -> str:
         headers = {
@@ -47,22 +49,19 @@ class TextProcessor:
         logger.debug(f"   Model: {model}")
         logger.debug(f"   Prompt: {prompt[:120]}{'...' if len(prompt) > 120 else ''}")
 
-        # Retry up to 3 times if rate limited
         for attempt in range(3):
             try:
                 response = requests.post(self.api_url, headers=headers, json=payload, timeout=30)
                 logger.debug(f"📥 Status: {response.status_code}")
 
-                # Rate limited — wait and retry
                 if response.status_code == 429:
                     wait = 10 * (attempt + 1)
-                    logger.warning(f"⏳ Rate limited — waiting {wait} seconds and retrying (attempt {attempt + 1}/3)...")
+                    logger.warning(f"⏳ Rate limited — waiting {wait} seconds (attempt {attempt + 1}/3)...")
                     time.sleep(wait)
                     continue
 
-                # Model loading
                 if response.status_code == 503:
-                    logger.warning("Model is loading — waiting 5 seconds and retrying...")
+                    logger.warning("Service unavailable — waiting 5 seconds...")
                     time.sleep(5)
                     continue
 
@@ -77,12 +76,11 @@ class TextProcessor:
                 return None
 
             except requests.exceptions.Timeout:
-                logger.error("⏰ Request timed out after 30 seconds.")
+                logger.error("⏰ Request timed out.")
                 return None
             except requests.exceptions.RequestException as e:
                 logger.error(f"🔥 Request failed: {e}")
                 if attempt < 2:
-                    logger.info(f"Retrying in 5 seconds...")
                     time.sleep(5)
                     continue
                 return None
