@@ -21,7 +21,7 @@ class TextProcessor:
             logger.info("✅ Groq API key loaded successfully.")
 
         # Groq model — fast and free
-        self.model = "llama3-8b-8192"
+        self.model = "llama-3.1-8b-instant"
 
         self.models = {
             'generate': self.model,
