@@ -12,7 +12,7 @@ body {
 }
 
 .announcement-bar {
-    background: #ffd700;
+    background: #a03ff5;
     color: #333;
     text-align: center;
     padding: 10px;
@@ -206,3 +206,4 @@ footer {
         width: 100%;
     }
 }
+
