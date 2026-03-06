@@ -157,13 +157,13 @@ textarea:focus {
 }
 
 .primary-btn {
-    background: #ffd700;
-    color: #333;
+    background: white;
+    color: #667eea;
 }
 
 .primary-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(255,215,0,0.4);
+    box-shadow: 0 5px 15px rgba(102,126,234,0.3);
 }
 
 .action-btn {
