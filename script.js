@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Show loading state
-        outputText.textContent = 'Processing...';
+        outputText.textContent = 'generating...';
         
         try {
             console.log(`Sending request to ${BACKEND_URL}/api/process with action: ${action}`);
@@ -49,21 +49,29 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const data = await response.json();
 
-            if (response.ok && data.success) {
-                outputText.textContent = data.result;
-            } else {
-                outputText.textContent = 'Error: ' + (data.error || 'Unknown error');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            outputText.textContent = '⚠️ Error connecting to server. Make sure backend is running at port 5000.';
-        }
-    }
+           if (response.ok && data.success) {
+    outputText.textContent = data.result;
+    document.getElementById('copy-btn').style.display = 'inline-block';
+} else {
+    outputText.textContent = 'Error: ' + (data.error || 'Unknown error');
+}
+} catch (error) {
+    console.error('Error:', error);
+    outputText.textContent = '⚠️ Error connecting to server. Make sure backend is running at port 5000.';
+}
+}
 
     // Event listeners - each button now sends a DIFFERENT action
     generateBtn.addEventListener('click', () => processText('generate'));  // Changed to 'generate'
     rephraseBtn.addEventListener('click', () => processText('rephrase'));
     grammarBtn.addEventListener('click', () => processText('grammar'));
     scriptBtn.addEventListener('click', () => processText('script'));      // This is now ONLY for scripts
-
+    
+window.copyText = function() {
+    const text = document.getElementById('output-text').textContent;
+    navigator.clipboard.writeText(text);
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = '✅ Copied!';
+    setTimeout(() => btn.textContent = '📋 Copy', 2000);
+}
 });
