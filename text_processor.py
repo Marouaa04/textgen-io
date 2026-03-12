@@ -19,10 +19,13 @@ class TextProcessor:
         else:
             logger.info("Groq API key loaded.")
 
-        self.model   = "llama3-8b-8192"
+        self.model   = "llama-3.1-8b-instant"
         self.api_url = "https://api.groq.com/openai/v1/chat/completions"
 
     def _call(self, prompt, max_tokens=500):
+        if not self.api_key:
+            return None
+
         headers = {
             "Authorization": f"Bearer {self.api_key}",
             "Content-Type": "application/json",
@@ -37,6 +40,10 @@ class TextProcessor:
         for attempt in range(3):
             try:
                 response = requests.post(self.api_url, headers=headers, json=payload, timeout=30)
+
+                if response.status_code == 400:
+                    logger.error(f"Bad request: {response.text}")
+                    return None
 
                 if response.status_code == 429:
                     wait = 10 * (attempt + 1)
@@ -89,9 +96,9 @@ class TextProcessor:
         return result if result else self._fallback('rephrase', text)
 
     def fix_grammar(self, text):
-        result = self._call(f"Fix grammar errors: {text}")
+        result = self._call(f"Fix grammar errors in this text and return only the corrected version: {text}")
         return result if result else self._fallback('grammar', text)
 
     def generate_script(self, text):
-        result = self._call(f"Convert to script format: {text}")
+        result = self._call(f"Convert this into a proper script format with speaker cues: {text}")
         return result if result else self._fallback('script', text)
