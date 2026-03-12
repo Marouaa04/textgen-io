@@ -1,58 +1,243 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TextGen.io - AI Text Generation Workspace</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TextGen — AI Writing Workspace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital@1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <div class="announcement-bar">
-        Domain for sale: TextGen.io is available for sale <a href="mailto:infotextgen@textgen.io" class="contact-link">Contact Us</a>
+
+  <!-- CURSOR GLOW -->
+  <div class="cursor-glow" id="cursorGlow"></div>
+
+  <!-- GRID BACKGROUND -->
+  <div class="bg-grid"></div>
+  <div class="bg-vignette"></div>
+
+  <!-- NAV -->
+  <nav class="nav" id="nav">
+    <div class="nav-left">
+      <div class="nav-logo">
+        <span class="logo-mark">TG</span>
+        <span class="logo-text">TextGen</span>
+      </div>
+      <div class="nav-status">
+        <span class="status-dot"></span>
+        <span>All systems operational</span>
+      </div>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#" class="active">Workspace</a></li>
+      <li><a href="#">History</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="btn-ghost" id="loginBtn">Sign in</button>
+      <button class="btn-primary nav-cta">Get Started</button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-eyebrow">
+      <span class="pill">✦ Powered by Llama 3</span>
+    </div>
+    <h1 class="hero-title">
+      <span class="line-1">Write less.</span>
+      <span class="line-2"><em>Create</em> more.</span>
+    </h1>
+    <p class="hero-sub">Four powerful AI tools. One elegant workspace.<br/>Generate, rephrase, fix, and script — instantly.</p>
+
+    <!-- FLOATING STATS -->
+    <div class="hero-stats">
+      <div class="stat-chip">
+        <span class="stat-n">4</span>
+        <span class="stat-l">AI Tools</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-chip">
+        <span class="stat-n">500</span>
+        <span class="stat-l">Char limit</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-chip">
+        <span class="stat-n">&lt;2s</span>
+        <span class="stat-l">Response time</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORKSPACE -->
+  <main class="workspace-wrap">
+
+    <!-- TOOL SELECTOR -->
+    <div class="tool-rail">
+      <button class="tool-pill active" data-action="generate">
+        <span class="tool-icon">✦</span>
+        <span>Generate</span>
+      </button>
+      <button class="tool-pill" data-action="rephrase">
+        <span class="tool-icon">⟳</span>
+        <span>Rephrase</span>
+      </button>
+      <button class="tool-pill" data-action="grammar">
+        <span class="tool-icon">✓</span>
+        <span>Grammar Fix</span>
+      </button>
+      <button class="tool-pill" data-action="script">
+        <span class="tool-icon">▶</span>
+        <span>Script Gen</span>
+      </button>
     </div>
 
-    <header>
-        <div class="logo">TextGen.io</div>
-        <nav>
-            <a href="#" class="active">Home</a>
-            <a href="#">About</a>
-            <a href="#">Tools</a>
-        </nav>
-    </header>
+    <!-- PANELS -->
+    <div class="panels">
 
-    <main>
-        <h1>AI Text Generation Workspace</h1>
-        <p class="subtitle">Transform your text with powerful AI tools</p>
-
-        <div class="workspace">
-            <div class="input-section">
-                <label>your text</label>
-                <textarea id="input-text" placeholder="Paste your text here..." maxlength="500"></textarea>
-                <div class="char-counter">
-                    <span id="char-count">0</span>/500 characters
-                </div>
-            </div>
-
-            <div class="output-section">
-                <label>Results</label>
-                <div id="output-text" class="output-box">
-                    Results will appear here..
-                </div>
-            </div>
+      <!-- INPUT -->
+      <div class="panel panel-input" id="inputPanel">
+        <div class="panel-header">
+          <div class="panel-tag">
+            <span class="tag-num">01</span>
+            <span class="tag-label">Your Text</span>
+          </div>
+          <div class="char-meter">
+            <svg class="meter-ring" viewBox="0 0 36 36">
+              <circle class="ring-bg" cx="18" cy="18" r="15.9"/>
+              <circle class="ring-fill" id="meterRing" cx="18" cy="18" r="15.9"
+                stroke-dasharray="0 100"/>
+            </svg>
+            <span id="charCount">0</span>
+          </div>
         </div>
 
-        <div class="actions">
-            <button id="generate-btn" class="primary-btn">Generate</button>
-            <button id="rephrase-btn" class="action-btn">Rephrase</button>
-            <button id="grammar-btn" class="action-btn">Grammar Fix</button>
-            <button id="script-btn" class="action-btn">Script Gen</button>
+        <textarea
+          id="inputText"
+          class="text-input"
+          placeholder="Paste or type your text here…"
+          maxlength="500"
+          spellcheck="false"
+        ></textarea>
+
+        <div class="panel-footer">
+          <span class="footer-hint" id="charHint">0 / 500 characters</span>
+          <button class="btn-clear" id="clearBtn" title="Clear">✕ Clear</button>
         </div>
-    </main>
+      </div>
 
-    <footer>
-        <p>2026 TextGen.io. All rights reserved</p>
-    </footer>
+      <!-- DIVIDER -->
+      <div class="panel-divider">
+        <button class="run-fab" id="runBtn" title="Run">
+          <span class="fab-arrow">→</span>
+          <span class="fab-label">Run</span>
+          <div class="fab-ripple"></div>
+        </button>
+      </div>
 
-    <script src="script.js"></script>
+      <!-- OUTPUT -->
+      <div class="panel panel-output" id="outputPanel">
+        <div class="panel-header">
+          <div class="panel-tag">
+            <span class="tag-num">02</span>
+            <span class="tag-label">Result</span>
+          </div>
+          <div class="output-actions">
+            <button class="icon-btn" id="copyBtn" title="Copy result" style="display:none">
+              <span>⎘</span> Copy
+            </button>
+            <button class="icon-btn" id="saveBtn" title="Save to history" style="display:none">
+              <span>↓</span> Save
+            </button>
+          </div>
+        </div>
+
+        <!-- Empty state -->
+        <div class="output-empty" id="outputEmpty">
+          <div class="empty-orb"></div>
+          <p>Your result will appear here</p>
+          <span>Choose a tool and hit Run →</span>
+        </div>
+
+        <!-- Loading state -->
+        <div class="output-loading" id="outputLoading" style="display:none">
+          <div class="loading-bars">
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            <div class="bar"></div><div class="bar"></div>
+          </div>
+          <p class="loading-label" id="loadingLabel">Generating…</p>
+        </div>
+
+        <!-- Result -->
+        <div class="output-result" id="outputResult" style="display:none">
+          <p id="outputText"></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- HISTORY PANEL -->
+    <div class="history-section" id="historySection" style="display:none">
+      <div class="history-header">
+        <span class="section-label">↳ Recent Generations</span>
+        <button class="btn-ghost-sm" id="clearHistory">Clear all</button>
+      </div>
+      <div class="history-list" id="historyList"></div>
+    </div>
+
+  </main>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+  <!-- AUTH MODAL -->
+  <div class="modal-overlay" id="modalOverlay" style="display:none">
+    <div class="modal" id="authModal">
+      <button class="modal-close" id="modalClose">✕</button>
+      <div class="modal-tabs">
+        <button class="mtab active" data-tab="login">Sign In</button>
+        <button class="mtab" data-tab="register">Register</button>
+      </div>
+
+      <div class="modal-body" id="loginForm">
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="loginEmail" placeholder="you@example.com" />
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="loginPassword" placeholder="••••••••" />
+        </div>
+        <button class="btn-primary full" id="loginSubmit">Sign In</button>
+        <p class="form-note" id="loginMsg"></p>
+      </div>
+
+      <div class="modal-body" id="registerForm" style="display:none">
+        <div class="form-group">
+          <label>Name</label>
+          <input type="text" id="regName" placeholder="Your name" />
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="regEmail" placeholder="you@example.com" />
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="regPassword" placeholder="Min. 6 characters" />
+        </div>
+        <button class="btn-primary full" id="registerSubmit">Create Account</button>
+        <p class="form-note" id="registerMsg"></p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <span>© 2026 TextGen.io</span>
+    <span class="footer-dot">·</span>
+    <span>Built with AI</span>
+    <span class="footer-dot">·</span>
+    <a href="#">Privacy</a>
+  </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>
