@@ -18,7 +18,14 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'change-me-in-production')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///textgen.db')
+
+raw_db_url = os.getenv('DATABASE_URL', 'sqlite:///textgen.db')
+if raw_db_url.startswith('postgres://'):
+    raw_db_url = raw_db_url.replace('postgres://', 'postgresql+pg8000://', 1)
+elif raw_db_url.startswith('postgresql://') and '+' not in raw_db_url.split('://')[0]:
+    raw_db_url = raw_db_url.replace('postgresql://', 'postgresql+pg8000://', 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = raw_db_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 CORS(app, resources={r"/api/*": {"origins": os.getenv("CORS_ORIGINS", "*")}})
@@ -102,6 +109,7 @@ def err(msg, status=400):
 @app.route('/')
 def index():
     return send_from_directory('.', 'index.html')
+
 
 @app.route('/<path:filename>')
 def static_files(filename):
