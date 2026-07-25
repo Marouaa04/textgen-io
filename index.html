@@ -3,239 +3,170 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="TextGen — generate, rephrase, fix, and script text in one workspace." />
   <meta name='impact-site-verification' value='8de3f31b-1c98-4a95-bf45-5bbf6413b0dd'>
   <title>TextGen — AI Writing Workspace</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital@1&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8419427108276324" crossorigin="anonymous"></script>
 </head>
 <body>
 
-  <!-- CURSOR GLOW -->
-  <div class="cursor-glow" id="cursorGlow"></div>
-
-  <!-- GRID BACKGROUND -->
-  <div class="bg-grid"></div>
-  <div class="bg-vignette"></div>
-
   <!-- NAV -->
-  <nav class="nav" id="nav">
-    <div class="nav-left">
-      <div class="nav-logo">
-        <span class="logo-mark">TG</span>
-        <span class="logo-text">TextGen</span>
-      </div>
-      <div class="nav-status">
-        <span class="status-dot"></span>
-        <span>All systems operational</span>
-      </div>
+  <nav class="nav">
+    <div class="nav-brand">
+      <span class="logo-mark">TG</span>
+      <span class="logo-text">TextGen</span>
     </div>
     <ul class="nav-links">
-      <li><a href="#" class="active">Workspace</a></li>
-      <li><a href="#">History</a></li>
+      <li><a href="#workspace" class="active">Workspace</a></li>
+      <li><a href="#" id="historyNavLink">History</a></li>
     </ul>
-    <div class="nav-right">
+    <div class="nav-actions">
       <button class="btn-ghost" id="loginBtn">Sign in</button>
-      <button class="btn-primary nav-cta">Get Started</button>
+      <button class="btn-primary" id="signupBtn">Get started</button>
     </div>
   </nav>
 
   <!-- HERO -->
-  <section class="hero">
-    <div class="hero-eyebrow">
-      <span class="pill">✦ Powered by Llama 3</span>
+  <header class="hero">
+    <div class="hero-inner">
+      <span class="hero-tag">Groq · Llama 3</span>
+      <h1 class="hero-title">Write less. Create more.</h1>
+      <p class="hero-sub">Generate, rephrase, fix grammar, and turn ideas into scripts — one workspace, one paste box.</p>
+      <div class="hero-stats">
+        <div class="stat"><strong>4</strong><span>tools</span></div>
+        <div class="stat"><strong>500</strong><span>char limit</span></div>
+        <div class="stat"><strong>&lt;2s</strong><span>response</span></div>
+      </div>
     </div>
-    <h1 class="hero-title">
-      <span class="line-1">Write less.</span>
-      <span class="line-2"><em>Create</em> more.</span>
-    </h1>
-    <p class="hero-sub">all the AI tools you need in one workspace.<br/>Generate, rephrase, fix, and script — instantly.</p>
+  </header>
 
-    <!-- FLOATING STATS -->
-    <div class="hero-stats">
-      <div class="stat-chip">
-        <span class="stat-n">4</span>
-        <span class="stat-l">AI Tools</span>
+  <!-- WORKSPACE -->
+  <main class="workspace" id="workspace">
+    <div class="workspace-card">
+
+      <div class="tool-tabs" id="toolTabs">
+        <button class="tool-tab active" data-action="generate">Generate</button>
+        <button class="tool-tab" data-action="rephrase">Rephrase</button>
+        <button class="tool-tab" data-action="grammar">Grammar fix</button>
+        <button class="tool-tab" data-action="script">Script gen</button>
       </div>
-      <div class="stat-divider"></div>
-      <div class="stat-chip">
-        <span class="stat-n">500</span>
-        <span class="stat-l">Char limit</span>
+
+      <div class="panels">
+
+        <!-- INPUT -->
+        <section class="panel">
+          <div class="panel-head">
+            <span class="panel-label">Your text</span>
+            <span class="char-count"><span id="charCount">0</span>/500</span>
+          </div>
+          <textarea
+            id="inputText"
+            class="text-area"
+            placeholder="Paste or type your text here…"
+            maxlength="500"
+            spellcheck="false"
+          ></textarea>
+          <div class="panel-foot">
+            <button class="link-btn" id="clearBtn">Clear</button>
+            <button class="btn-run" id="runBtn">
+              <span id="runLabel">Run</span>
+              <span class="run-arrow">→</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- OUTPUT -->
+        <section class="panel panel-output">
+          <div class="panel-head">
+            <span class="panel-label">Result</span>
+            <div class="output-actions">
+              <button class="link-btn" id="copyBtn" hidden>Copy</button>
+            </div>
+          </div>
+
+          <div class="output-body">
+            <div class="output-state" id="outputEmpty">
+              <p>Nothing here yet</p>
+              <span>Choose a tool and hit Run.</span>
+            </div>
+            <div class="output-state" id="outputLoading" hidden>
+              <div class="loading-dots"><span></span><span></span><span></span></div>
+              <span id="loadingLabel">Working on it…</span>
+            </div>
+            <div class="output-state output-result" id="outputResult" hidden>
+              <p id="outputTextEl"></p>
+            </div>
+          </div>
+        </section>
       </div>
-      <div class="stat-divider"></div>
-      <div class="stat-chip">
-        <span class="stat-n">&lt;2s</span>
-        <span class="stat-l">Response time</span>
+    </div>
+
+    <!-- HISTORY -->
+    <section class="history" id="historySection" hidden>
+      <div class="history-head">
+        <span class="panel-label">Recent generations</span>
+        <button class="link-btn" id="clearHistory">Clear all</button>
+      </div>
+      <div class="history-list" id="historyList"></div>
+    </section>
+  </main>
+
+  <!-- INFO -->
+  <section class="info">
+    <h2>How TextGen works</h2>
+    <div class="info-grid">
+      <div class="info-card">
+        <h3>Generate</h3>
+        <p>Give it a topic or a rough idea. Get a full paragraph back, ready to edit.</p>
+      </div>
+      <div class="info-card">
+        <h3>Rephrase</h3>
+        <p>Paste a sentence or paragraph. Get the same meaning, cleaner wording.</p>
+      </div>
+      <div class="info-card">
+        <h3>Grammar fix</h3>
+        <p>Paste rough text. Get it back corrected, nothing added or removed.</p>
+      </div>
+      <div class="info-card">
+        <h3>Script gen</h3>
+        <p>Paste a topic or a scene idea. Get it formatted with cues, ready to read aloud.</p>
       </div>
     </div>
   </section>
 
-  <!-- WORKSPACE -->
-  <main class="workspace-wrap">
-
-    <!-- TOOL SELECTOR -->
-    <div class="tool-rail">
-      <button class="tool-pill active" data-action="generate">
-        <span class="tool-icon">✦</span>
-        <span>Generate</span>
-      </button>
-      <button class="tool-pill" data-action="rephrase">
-        <span class="tool-icon">⟳</span>
-        <span>Rephrase</span>
-      </button>
-      <button class="tool-pill" data-action="grammar">
-        <span class="tool-icon">✓</span>
-        <span>Grammar Fix</span>
-      </button>
-      <button class="tool-pill" data-action="script">
-        <span class="tool-icon">▶</span>
-        <span>Script Gen</span>
-      </button>
-    </div>
-
-    <!-- PANELS -->
-    <div class="panels">
-
-      <!-- INPUT -->
-      <div class="panel panel-input" id="inputPanel">
-        <div class="panel-header">
-          <div class="panel-tag">
-            <span class="tag-num">01</span>
-            <span class="tag-label">Your Text</span>
-          </div>
-          <div class="char-meter">
-            <svg class="meter-ring" viewBox="0 0 36 36">
-              <circle class="ring-bg" cx="18" cy="18" r="15.9"/>
-              <circle class="ring-fill" id="meterRing" cx="18" cy="18" r="15.9"
-                stroke-dasharray="0 100"/>
-            </svg>
-            <span id="charCount">0</span>
-          </div>
-        </div>
-
-        <textarea
-          id="inputText"
-          class="text-input"
-          placeholder="Paste or type your text here…"
-          maxlength="500"
-          spellcheck="false"
-        ></textarea>
-
-        <div class="panel-footer">
-          <span class="footer-hint" id="charHint">0 / 500 characters</span>
-          <button class="btn-clear" id="clearBtn" title="Clear">✕ Clear</button>
-        </div>
-      </div>
-
-      <!-- DIVIDER -->
-      <div class="panel-divider">
-        <button class="run-fab" id="runBtn" title="Run">
-          <span class="fab-arrow">→</span>
-          <span class="fab-label">Run</span>
-          <div class="fab-ripple"></div>
-        </button>
-      </div>
-
-      <!-- OUTPUT -->
-      <div class="panel panel-output" id="outputPanel">
-        <div class="panel-header">
-          <div class="panel-tag">
-            <span class="tag-num">02</span>
-            <span class="tag-label">Result</span>
-          </div>
-          <div class="output-actions">
-            <button class="icon-btn" id="copyBtn" title="Copy result" style="display:none">
-              <span>⎘</span> Copy
-            </button>
-            <button class="icon-btn" id="saveBtn" title="Save to history" style="display:none">
-              <span>↓</span> Save
-            </button>
-          </div>
-        </div>
-
-        <!-- Empty state -->
-        <div class="output-empty" id="outputEmpty">
-          <div class="empty-orb"></div>
-          <p>Your result will appear here</p>
-          <span>Choose a tool and hit Run →</span>
-        </div>
-
-        <!-- Loading state -->
-        <div class="output-loading" id="outputLoading" style="display:none">
-          <div class="loading-bars">
-            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-            <div class="bar"></div><div class="bar"></div>
-          </div>
-          <p class="loading-label" id="loadingLabel">Generating…</p>
-        </div>
-
-        <!-- Result -->
-        <div class="output-result" id="outputResult" style="display:none">
-          <p id="outputText"></p>
-        </div>
-      </div>
-    </div>
-
-    <!-- HISTORY PANEL -->
-    <div class="history-section" id="historySection" style="display:none">
-      <div class="history-header">
-        <span class="section-label">↳ Recent Generations</span>
-        <button class="btn-ghost-sm" id="clearHistory">Clear all</button>
-      </div>
-      <div class="history-list" id="historyList"></div>
-    </div>
-
-  </main>
-
-  <!-- TOAST -->
   <div class="toast" id="toast"></div>
 
   <!-- AUTH MODAL -->
-  <div class="modal-overlay" id="modalOverlay" style="display:none">
-    <div class="modal" id="authModal">
+  <div class="modal-overlay" id="modalOverlay" hidden>
+    <div class="modal">
       <button class="modal-close" id="modalClose">✕</button>
       <div class="modal-tabs">
-        <button class="mtab active" data-tab="login">Sign In</button>
-        <button class="mtab" data-tab="register">Register</button>
+        <button class="mtab active" data-tab="login">Sign in</button>
+        <button class="mtab" data-tab="register">Create account</button>
       </div>
 
-      <div class="modal-body" id="loginForm">
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" id="loginEmail" placeholder="you@example.com" />
-        </div>
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="loginPassword" placeholder="••••••••" />
-        </div>
-        <button class="btn-primary full" id="loginSubmit">Sign In</button>
+      <form class="modal-body" id="loginForm">
+        <label>Email<input type="email" id="loginEmail" placeholder="you@example.com" required /></label>
+        <label>Password<input type="password" id="loginPassword" placeholder="••••••••" required /></label>
+        <button type="submit" class="btn-primary full">Sign in</button>
         <p class="form-note" id="loginMsg"></p>
-      </div>
+      </form>
 
-      <div class="modal-body" id="registerForm" style="display:none">
-        <div class="form-group">
-          <label>Name</label>
-          <input type="text" id="regName" placeholder="Your name" />
-        </div>
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" id="regEmail" placeholder="you@example.com" />
-        </div>
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="regPassword" placeholder="Min. 6 characters" />
-        </div>
-        <button class="btn-primary full" id="registerSubmit">Create Account</button>
+      <form class="modal-body" id="registerForm" hidden>
+        <label>Name<input type="text" id="regName" placeholder="Your name" required /></label>
+        <label>Email<input type="email" id="regEmail" placeholder="you@example.com" required /></label>
+        <label>Password<input type="password" id="regPassword" placeholder="Min. 6 characters" required /></label>
+        <button type="submit" class="btn-primary full">Create account</button>
         <p class="form-note" id="registerMsg"></p>
-      </div>
+      </form>
     </div>
   </div>
 
   <footer class="footer">
     <span>© 2026 TextGen.io</span>
-    <span class="footer-dot">·</span>
-    <span class="footer-dot">·</span>
     <a href="#">Privacy</a>
   </footer>
 
