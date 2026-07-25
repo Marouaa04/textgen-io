@@ -310,6 +310,8 @@ a { color: inherit; }
   width: 100%;
 }
 
+.output-state[hidden] { display: none; }
+
 .output-state p { font-size: 0.9rem; font-weight: 600; color: var(--ink-soft); }
 .output-state span { font-size: 0.8rem; color: var(--ink-faint); }
 
@@ -443,6 +445,8 @@ a { color: inherit; }
   justify-content: center;
 }
 
+.modal-overlay[hidden] { display: none; }
+
 .modal {
   position: relative;
   background: var(--surface);
@@ -488,6 +492,7 @@ a { color: inherit; }
 .mtab.active { background: var(--surface); color: var(--violet-700); box-shadow: 0 1px 3px rgba(30,20,60,0.10); }
 
 .modal-body { display: flex; flex-direction: column; gap: 0.9rem; }
+.modal-body[hidden] { display: none; }
 
 .modal-body label {
   display: flex;
